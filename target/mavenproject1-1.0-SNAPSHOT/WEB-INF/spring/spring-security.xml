@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:security="http://www.springframework.org/schema/security"
+      
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-4.0.xsd
+
+">
+
+    <security:http auto-config="true" use-expressions="true">
+        <security:intercept-url pattern="/admin/**" access="hasRole('ROlE_ADMIN')"/>
+        <security:form-login username-parameter="j_username" 
+                             password-parameter="j_password"
+                             login-processing-url="/j_spring_security_check"
+                             default-target-url="/admin/dashboard"
+                             authentication-failure-url="/admin-login"
+        />
+        <security:authentication-manager>
+            <security:authentication-provider>
+                <security:jdbc-user-service data-source-ref="datasource"
+            
+                                            user-by-username-query="select username,password,active from user_login where username=?"
+                                            authorities-by-username-query="select username,password,active from user_login as ue,userroles as r where ue.uid=r.uid and username=?"/>
+            
+            </security:authentication-provider>
+        
+        
+        </security:authentication-manager>
+    
+    </security:http>
+</beans>
